@@ -49,9 +49,6 @@
                 obstacles.push(obstacle);
             }
 
-            // Controles da câmera
-            const controls = new THREE.OrbitControls(camera, renderer.domElement);
-
             // Iniciar o loop de animação
             animate();
         }
@@ -65,12 +62,20 @@
 
         // Função para colocar comida em uma posição aleatória
         function placeFood() {
-            food.position.set(Math.floor(Math.random() * 10 - 5) * boxSize, Math.floor(Math.random() * 10 - 5) * boxSize, 0);
+            food.position.set(
+                Math.floor(Math.random() * 10 - 5) * boxSize,
+                Math.floor(Math.random() * 10 - 5) * boxSize,
+                0
+            );
         }
 
         // Função para colocar um obstáculo em uma posição aleatória
         function placeObstacle(obstacle) {
-            obstacle.position.set(Math.floor(Math.random() * 10 - 5) * boxSize, Math.floor(Math.random() * 10 - 5) * boxSize, 0);
+            obstacle.position.set(
+                Math.floor(Math.random() * 10 - 5) * boxSize,
+                Math.floor(Math.random() * 10 - 5) * boxSize,
+                0
+            );
         }
 
         // Função para mover a cobra
