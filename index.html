@@ -1,1 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Game - Infinito</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: black;
+        }
+        canvas {
+            background-color: black;
+            border: 1px solid white;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="snakeGame" width="400" height="400"></canvas>
+
+    <script>
+        const canvas = document.getElementById('snakeGame');
+        const context = canvas.getContext('2d');
+        const box = 20;
+        let snake = [{ x: 8 * box, y: 8 * box }];
+        let direction = "right";
+        let food = {
+            x: Math.floor(Math.random() * 19) * box,
+            y: Math.floor(Math.random() * 19) * box
+        };
+
+        // Função para mover a cobra automaticamente
+        function autoMove() {
+            const directions = ["left", "right", "up", "down"];
+            direction = directions[Math.floor(Math.random() * directions.length)];
+        }
+
+        function drawGame() {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            context.fillStyle = "red";
+            context.fillRect(food.x, food.y, box, box);
+
+            for (let i = 0; i < snake.length; i++) {
+                context.fillStyle = i == 0 ? "green" : "white";
+                context.fillRect(snake[i].x, snake[i].y, box, box);
+            }
+
+            let snakeX = snake[0].x;
+            let snakeY = snake[0].y;
+
+            if (direction == "left") snakeX -= box;
+            if (direction == "right") snakeX += box;
+            if (direction == "up") snakeY -= box;
+            if (direction == "down") snakeY += box;
+
+            if (snakeX == food.x && snakeY == food.y) {
+                food = {
+                    x: Math.floor(Math.random() * 19) * box,
+                    y: Math.floor(Math.random() * 19) * box
+                };
+            } else {
+                snake.pop();
+            }
+
+            let newHead = { x: snakeX, y: snakeY };
+
+            // Verificar colisão com as bordas da tela
+            if (snakeX < 0) snakeX = canvas.width - box;
+            if (snakeX >= canvas.width) snakeX = 0;
+            if (snakeY < 0) snakeY = canvas.height - box;
+            if (snakeY >= canvas.height) snakeY = 0;
+
+            snake.unshift(newHead);
+            autoMove(); // Chamar a função que move a cobra automaticamente
+        }
+
+        setInterval(drawGame, 100); // O loop do jogo
+    </script>
+</body>
+</html>
 
