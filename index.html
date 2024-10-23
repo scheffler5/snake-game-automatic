@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo da Cobrinha 3D</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Configurações iniciais
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Cobrinha
+        const snake = [];
+        const snakeLength = 5;
+        const snakeSize = 1;
+
+        for (let i = 0; i < snakeLength; i++) {
+            const geometry = new THREE.BoxGeometry(snakeSize, snakeSize, snakeSize);
+            const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+            const cube = new THREE.Mesh(geometry, material);
+            cube.position.set(-i * snakeSize, 0, 0);
+            scene.add(cube);
+            snake.push(cube);
+        }
+
+        // Comida
+        const foodGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+        const foodMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+        const food = new THREE.Mesh(foodGeometry, foodMaterial);
+        food.position.set(5, 0, 0);
+        scene.add(food);
+
+        // Obstáculos
+        const obstacles = [];
+        const obstacleMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff });
+
+        for (let i = 0; i < 5; i++) {
+            const obstacleGeometry = new THREE.BoxGeometry(1, 1, 1);
+            const obstacle = new THREE.Mesh(obstacleGeometry, obstacleMaterial);
+            obstacle.position.set(Math.random() * 20 - 10, Math.random() * 10 - 5, Math.random() * 20 - 10);
+            scene.add(obstacle);
+            obstacles.push(obstacle);
+        }
+
+        camera.position.z = 10;
+
+        // Movimento da cobrinha
+        let direction = new THREE.Vector3(1, 0, 0);
+        let speed = 0.1;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            for (let i = snake.length - 1; i > 0; i--) {
+                snake[i].position.copy(snake[i - 1].position);
+            }
+            snake[0].position.add(direction.clone().multiplyScalar(speed));
+
+            // Colisão com a comida
+            if (snake[0].position.distanceTo(food.position) < 1) {
+                const newSegment = snake[snake.length - 1].clone();
+                snake.push(newSegment);
+                scene.add(newSegment);
+                food.position.set(Math.random() * 20 - 10, Math.random() * 10 - 5, Math.random() * 20 - 10);
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        // Controle de direção com teclas
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'ArrowUp') direction.set(0, 1, 0);
+            if (event.key === 'ArrowDown') direction.set(0, -1, 0);
+            if (event.key === 'ArrowLeft') direction.set(-1, 0, 0);
+            if (event.key === 'ArrowRight') direction.set(1, 0, 0);
+        });
+
+        animate();
+    </script>
+</body>
+</html>
