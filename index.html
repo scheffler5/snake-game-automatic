@@ -23,11 +23,12 @@
     <canvas id="snakeGame" width="400" height="400"></canvas>
 
     <script>
+        // Seleciona o canvas do jogo
         const canvas = document.getElementById('snakeGame');
         const context = canvas.getContext('2d');
-        const box = 20;
+        const box = 20; // Tamanho de cada parte da cobra
         let snake = [{ x: 8 * box, y: 8 * box }];
-        let direction = "right";
+        let direction = "right"; // Direção inicial da cobra
         let food = {
             x: Math.floor(Math.random() * 19) * box,
             y: Math.floor(Math.random() * 19) * box
@@ -40,15 +41,20 @@
         }
 
         function drawGame() {
+            // Limpa a tela antes de redesenhar
             context.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Desenha a comida
             context.fillStyle = "red";
             context.fillRect(food.x, food.y, box, box);
 
+            // Desenha a cobra
             for (let i = 0; i < snake.length; i++) {
                 context.fillStyle = i == 0 ? "green" : "white";
                 context.fillRect(snake[i].x, snake[i].y, box, box);
             }
 
+            // Define a próxima posição da cabeça da cobra
             let snakeX = snake[0].x;
             let snakeY = snake[0].y;
 
@@ -57,29 +63,33 @@
             if (direction == "up") snakeY -= box;
             if (direction == "down") snakeY += box;
 
+            // Verifica se a cobra comeu a comida
             if (snakeX == food.x && snakeY == food.y) {
+                // Reposiciona a comida
                 food = {
                     x: Math.floor(Math.random() * 19) * box,
                     y: Math.floor(Math.random() * 19) * box
                 };
             } else {
+                // Remove o último segmento da cobra
                 snake.pop();
             }
 
+            // Cria a nova cabeça da cobra
             let newHead = { x: snakeX, y: snakeY };
 
-            // Verificar colisão com as bordas da tela
+            // Verifica se a cobra passou pelos limites da tela e reaparece do outro lado
             if (snakeX < 0) snakeX = canvas.width - box;
             if (snakeX >= canvas.width) snakeX = 0;
             if (snakeY < 0) snakeY = canvas.height - box;
             if (snakeY >= canvas.height) snakeY = 0;
 
-            snake.unshift(newHead);
-            autoMove(); // Chamar a função que move a cobra automaticamente
+            snake.unshift(newHead); // Adiciona a nova cabeça à cobra
+            autoMove(); // Move automaticamente a cobra
         }
 
-        setInterval(drawGame, 100); // O loop do jogo
+        // Configura o intervalo de execução para 100ms
+        setInterval(drawGame, 100);
     </script>
 </body>
 </html>
-
